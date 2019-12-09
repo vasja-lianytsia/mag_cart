@@ -1,57 +1,73 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
+import React from "react";
+import styled, { ThemeProvider } from 'styled-components';
+import { theme } from '../styles/theme';
+import { GlobalStyle } from '../styles/globalStyle';
+import Navigation from './includes/Navigation';
+import NavigationMobile from './includes/NavigationMobile';
+import Footer from './includes/footer';
+import Contact from './Contact';
+import GoogleMaps from './googlemaps';
+ 
 
-import React from "react"
-import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
 
-import Header from "./header"
-import "./layout.css"
-import "./style.css"
+const PageWrapper = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  width: 100%;
+  @media (max-width: 710px) {
+    width: 100%;
+  }
+`
 
-const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
-          menuLinks {
-                          name
-                          link
-                        }
-        }
-      }
+const MainSection = styled.main`
+  margin: 30px 0;
+  width: 100%;
+  
+`
+
+const FooterStyled = styled.footer`
+  width: 100%;
+  padding: 20px;
+  text-align: right;
+
+  @media (max-width: 600px) {
+    text-align: center;
+  }
+`
+const ExternalLink = styled.a`
+  color: #c59fc5;
+`
+
+
+class Layout extends React.Component {
+
+  componentDidMount() {
+    if (window.Snipcart) {
+      window.Snipcart.api.configure('show_continue_shopping', true);
     }
-  `)
+  }
 
-  return (
-    <>
-      <Header menuLinks={data.site.siteMetadata.menuLinks} siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0px 1.0875rem 1.45rem`,
-          paddingTop: 0,
-        }}
-      >
-        <main>{children}</main>
-        <footer>
-          {/* © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a> */}
-        </footer>
-      </div>
-    </>
-  )
-}
 
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
+  render() {
+    const {   children } = this.props
+    const rootPath = `${__PATH_PREFIX__}/`
+    return (
+      <ThemeProvider theme={theme}>
+        <>
+          <GlobalStyle />
+          <PageWrapper>
+          <Navigation />
+          <NavigationMobile />
+            
+            <MainSection>{children}</MainSection>
+            <Contact />
+            <GoogleMaps />
+            <Footer />
+          </PageWrapper>
+        </>
+      </ThemeProvider>
+    )
+  }
 }
 
 export default Layout
